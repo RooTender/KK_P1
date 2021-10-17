@@ -17,7 +17,7 @@ int comm_beg = 0; /* wiersz rozpoczęcia komentarza */
 /* ..................... */
 
 %x  ST_COMMENT_1 ST_COMMENT_2 ST_TEXT_CONST
-
+d [0-9]
 
 %%
 
@@ -41,6 +41,28 @@ int comm_beg = 0; /* wiersz rozpoczęcia komentarza */
 (?i:ARRAY) 	return process_token(yytext, "KW_ARRAY", "", KW_ARRAY);
 (?i:RECORD) 	return process_token(yytext, "KW_RECORD", "", KW_RECORD);
 (?i:OF) 	return process_token(yytext, "KW_OF", "", KW_OF);
+
+
+ /* Usuwanie białych znaków */
+[[:space:]]  ;
+
+ /* Wykrywanie symboli końcowych jednoznakowych */
+[[:punct:]]  return process_token(yytext, yytext, "", CHARACTER_CONST);
+
+ /* Wykrywanie operatorów wieloznakowych */
+\:\=  return process_token(yytext, "ASSIGN", "", ASSIGN);
+\<\=  return process_token(yytext, "LE", "", LE);
+\.\.  return process_token(yytext, "RANGE", "", RANGE);
+
+ /* Wykrywanie identyfikatorów 
+ [[[:alpha:]]_]+[[:alnum:]]*  return process_token(yytext, "IDENT", yytext, IDENT);
+
+ /* Wykrywanie liczb 
+ ({d}+\.{d}*)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
+ {d}+  return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST); */
+
+
+
 
 %%
 
