@@ -21,8 +21,26 @@ int comm_beg = 0; /* wiersz rozpoczęcia komentarza */
 
 %%
 
-
-
+ /* Wykrywanie słów kluczowych BEZ uwzględniania wielkości liter */
+(?i:PROGRAM) 	return process_token(yytext, "KW_PROGRAM", "", KW_PROGRAM);
+(?i:BEGIN) 	return process_token(yytext, "KW_BEGIN", "", KW_BEGIN);
+(?i:END) 	return process_token(yytext, "KW_END", "", KW_END);
+(?i:USES) 	return process_token(yytext, "KW_USES", "", KW_USES);
+(?i:VAR) 	return process_token(yytext, "KW_VAR", "", KW_VAR);
+(?i:CONST) 	return process_token(yytext, "KW_CONST", "", KW_CONST);
+(?i:IF) 	return process_token(yytext, "KW_IF", "", KW_IF);
+(?i:THEN) 	return process_token(yytext, "KW_THEN", "", KW_THEN);
+(?i:ELSE) 	return process_token(yytext, "KW_ELSE", "", KW_ELSE);
+(?i:CHAR) 	return process_token(yytext, "KW_CHAR", "", KW_CHAR);
+(?i:INTEGER) 	return process_token(yytext, "KW_INTEGER", "", KW_INTEGER);
+(?i:REAL) return process_token(yytext, "KW_REAL", "", KW_REAL);
+(?i:FOR) 	return process_token(yytext, "KW_FOR", "", KW_FOR);
+(?i:TO) 	return process_token(yytext, "KW_TO", "", KW_TO);
+(?i:DO) 	return process_token(yytext, "KW_DO", "", KW_DO);
+(?i:DOWNTO) return process_token(yytext, "KW_DOWNTO", "", KW_DOWNTO);
+(?i:ARRAY) 	return process_token(yytext, "KW_ARRAY", "", KW_ARRAY);
+(?i:RECORD) 	return process_token(yytext, "KW_RECORD", "", KW_RECORD);
+(?i:OF) 	return process_token(yytext, "KW_OF", "", KW_OF);
 
 %%
 
@@ -83,7 +101,7 @@ int process_token(const char *text, const char *TokenType,
 
   case STRING_CONST:
     l = strlen(text);
-    strncpy(yylval.s, TokenVal+1, l - 2 <= MAX_STR_LEN ? l - 1 : MAX_STR_LEN);
+    strnncpy(yylval.s, TokenVal+1, l - 2 <= MAX_STR_LEN ? l - 1 : MAX_STR_LEN);
     break;
 
   case CHARACTER_CONST:
