@@ -42,7 +42,6 @@ d [0-9]
 (?i:RECORD) 	return process_token(yytext, "KW_RECORD", "", KW_RECORD);
 (?i:OF) 	return process_token(yytext, "KW_OF", "", KW_OF);
 
-
  /* Usuwanie białych znaków */
 [[:space:]]  ;
 
@@ -54,12 +53,12 @@ d [0-9]
 \<\=  return process_token(yytext, "LE", "", LE);
 \.\.  return process_token(yytext, "RANGE", "", RANGE);
 
- /* Wykrywanie identyfikatorów 
- [[[:alpha:]]_]+[[:alnum:]]*  return process_token(yytext, "IDENT", yytext, IDENT);
+ /* Wykrywanie identyfikatorów */
+[[:alpha:]_]+[:alnum:]*  return process_token(yytext, "IDENT", yytext, IDENT);
 
- /* Wykrywanie liczb 
- ({d}+\.{d}*)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
- {d}+  return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST); */
+ /* Wykrywanie liczb */
+({d}+\.{d}*)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
+{d}+  return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST);
 
 
 

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.7.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_P_TAB_H_INCLUDED
 # define YY_YY_P_TAB_H_INCLUDED
@@ -44,41 +45,46 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    KW_PROGRAM = 258,
-    KW_BEGIN = 259,
-    KW_END = 260,
-    KW_USES = 261,
-    KW_VAR = 262,
-    KW_CONST = 263,
-    KW_IF = 264,
-    KW_THEN = 265,
-    KW_ELSE = 266,
-    KW_CHAR = 267,
-    KW_INTEGER = 268,
-    KW_REAL = 269,
-    KW_FOR = 270,
-    KW_TO = 271,
-    KW_DO = 272,
-    KW_FUNCTION = 273,
-    KW_PROCEDURE = 274,
-    KW_DOWNTO = 275,
-    KW_ARRAY = 276,
-    KW_RECORD = 277,
-    KW_OF = 278,
-    ASSIGN = 279,
-    LE = 280,
-    RANGE = 281,
-    IDENT = 282,
-    STRING_CONST = 283,
-    FLOAT_CONST = 284,
-    INTEGER_CONST = 285,
-    CHARACTER_CONST = 286
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    KW_PROGRAM = 258,              /* KW_PROGRAM  */
+    KW_BEGIN = 259,                /* KW_BEGIN  */
+    KW_END = 260,                  /* KW_END  */
+    KW_USES = 261,                 /* KW_USES  */
+    KW_VAR = 262,                  /* KW_VAR  */
+    KW_CONST = 263,                /* KW_CONST  */
+    KW_IF = 264,                   /* KW_IF  */
+    KW_THEN = 265,                 /* KW_THEN  */
+    KW_ELSE = 266,                 /* KW_ELSE  */
+    KW_CHAR = 267,                 /* KW_CHAR  */
+    KW_INTEGER = 268,              /* KW_INTEGER  */
+    KW_REAL = 269,                 /* KW_REAL  */
+    KW_FOR = 270,                  /* KW_FOR  */
+    KW_TO = 271,                   /* KW_TO  */
+    KW_DO = 272,                   /* KW_DO  */
+    KW_FUNCTION = 273,             /* KW_FUNCTION  */
+    KW_PROCEDURE = 274,            /* KW_PROCEDURE  */
+    KW_DOWNTO = 275,               /* KW_DOWNTO  */
+    KW_ARRAY = 276,                /* KW_ARRAY  */
+    KW_RECORD = 277,               /* KW_RECORD  */
+    KW_OF = 278,                   /* KW_OF  */
+    ASSIGN = 279,                  /* ASSIGN  */
+    LE = 280,                      /* LE  */
+    RANGE = 281,                   /* RANGE  */
+    IDENT = 282,                   /* IDENT  */
+    STRING_CONST = 283,            /* STRING_CONST  */
+    FLOAT_CONST = 284,             /* FLOAT_CONST  */
+    INTEGER_CONST = 285,           /* INTEGER_CONST  */
+    CHARACTER_CONST = 286          /* CHARACTER_CONST  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -91,7 +97,7 @@ union YYSTYPE
 	int i; /* pole całkowite */
 	double d; /* pole zmiennoprzecinkowe */
 
-#line 95 "p.tab.h"
+#line 101 "p.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
