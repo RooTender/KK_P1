@@ -45,6 +45,9 @@ d [0-9]
  /* Usuwanie białych znaków */
 [[:space:]]  ;
 
+ /* Wykrywanie stałych tekstowych bez użycia mechanizmu warunków początkowych */
+(\"[^"]*\")|(\'[^']*\') return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);
+
  /* Wykrywanie symboli końcowych jednoznakowych */
 [[:punct:]]  return process_token(yytext, yytext, "", CHARACTER_CONST);
 
@@ -60,7 +63,8 @@ d [0-9]
 ({d}+\.{d}*)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
 {d}+  return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST);
 
-
+ /* Wykrywanie dyrektywy dołączania plików */
+\{\$I\ [A-Za-z_]+.inc\}  printf("Przetwarzanie dyrektywy INCLUDE\n");
 
 
 %%
