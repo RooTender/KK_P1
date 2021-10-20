@@ -21,6 +21,12 @@ d [0-9]
 
 %%
 
+ /* Wykrywanie komentarzy z użyciem warunku */
+<INITIAL>"(*" BEGIN(ST_COMMENT_1); /* Wejście w warunek */
+<INITIAL>"*)" fprintf(stderr, "Koniec komentarza bez początku\n");
+<ST_COMMENT_1>"*)" BEGIN(INITIAL); /* Prawidłowe zakończenie komentarza */
+<ST_COMMENT_1>. ; /* Pomijanie wnętrza komentarza */
+
  /* Wykrywanie słów kluczowych BEZ uwzględniania wielkości liter */
 (?i:PROGRAM) 	return process_token(yytext, "KW_PROGRAM", "", KW_PROGRAM);
 (?i:BEGIN) 	return process_token(yytext, "KW_BEGIN", "", KW_BEGIN);
@@ -51,17 +57,17 @@ d [0-9]
  /* Wykrywanie symboli końcowych jednoznakowych */
 [[:punct:]]  return process_token(yytext, yytext, "", CHARACTER_CONST);
 
- /* Wykrywanie operatorów wieloznakowych */
-\:\=  return process_token(yytext, "ASSIGN", "", ASSIGN);
-\<\=  return process_token(yytext, "LE", "", LE);
-\.\.  return process_token(yytext, "RANGE", "", RANGE);
-
  /* Wykrywanie identyfikatorów */
 [[:alpha:]_]+[:alnum:]*  return process_token(yytext, "IDENT", yytext, IDENT);
 
  /* Wykrywanie liczb */
 ({d}+\.{d}*)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
 {d}+  return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST);
+
+ /* Wykrywanie operatorów wieloznakowych */
+\:\=  return process_token(yytext, "ASSIGN", "", ASSIGN);
+\<\=  return process_token(yytext, "LE", "", LE);
+\.\.  return process_token(yytext, "RANGE", "", RANGE);
 
  /* Wykrywanie dyrektywy dołączania plików */
 \{\$I\ [A-Za-z_]+.inc\}  printf("Przetwarzanie dyrektywy INCLUDE\n");
