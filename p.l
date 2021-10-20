@@ -10,7 +10,7 @@ int process_token(const char *text, const char *TokenType,
                   const char *TokenVal, const int TokenID); 
 
 int comm_beg = 0; /* wiersz rozpoczęcia komentarza */
-int str_beg = 0;
+int str_beg = -1;
 int str_beg_start = 0;
 %}
 
