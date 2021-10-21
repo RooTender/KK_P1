@@ -10,8 +10,6 @@ int process_token(const char *text, const char *TokenType,
                   const char *TokenVal, const int TokenID); 
 
 int comm_beg = 0; /* wiersz rozpoczęcia komentarza */
-int str_beg = -1;
-int str_beg_start = 0;
 %}
 
 
@@ -26,10 +24,10 @@ d [0-9]
 
 
  /* Wykrywanie napisów z użyciem warunków początkowych */
-<INITIAL>\"       { BEGIN(ST_TEXT_CONST); str_beg_start = yylineno; }
-<ST_TEXT_CONST>\" { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);  }
+<INITIAL>\'       { BEGIN(ST_TEXT_CONST); yymore(); }
+<ST_TEXT_CONST>\' { BEGIN(INITIAL); return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);  }
 <ST_TEXT_CONST>.  { yymore(); }
-<ST_TEXT_CONST>\n { str_beg = str_beg_start; }
+<ST_TEXT_CONST>\n { printf("Brak zamknięcia napisu otwartego w linii %d\n", yylineno); BEGIN(INITIAL); }
 
  /* Wykrywanie komentarzy z użyciem warunków początkowych */
 <INITIAL>"(*" { BEGIN(ST_COMMENT_1); comm_beg = yylineno; }
@@ -66,8 +64,8 @@ d [0-9]
  /* Usuwanie białych znaków */
 [[:space:]]  ;
 
- /* Wykrywanie stałych tekstowych bez użycia mechanizmu warunków początkowych */
-(\"[^"]*\")|(\'[^']*\') return process_token(yytext, "STRING_CONST", yytext, STRING_CONST);
+ /* Wykrywanie stałych tekstowych bez użycia mechanizmu warunków początkowych *
+ (\"[^"]*\")|(\'[^']*\') return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); */
 
  /* Wykrywanie symboli końcowych jednoznakowych */
 [[:punct:]]  return process_token(yytext, yytext, "", CHARACTER_CONST);
@@ -168,18 +166,11 @@ int yywrap( void )
 	/* wypisujemy informację o błędzie.*/
 	/* ..................... */
 
-  if (str_beg == str_beg_start) {
-    printf("Brak zamknięcia napisu otwartego w linii %d\n", str_beg);
-  }
-
   if (YYSTATE != INITIAL) {
     if (comm_beg > 0) {
       printf("Brak zamknięcia komentarza otwartego w linii %d\n", comm_beg);
     }
   }
-
-
-  
 
 	return( 1 ); /* koniecznie, by analiza nie rozpoczęła się od nowa */
 }
