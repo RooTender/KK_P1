@@ -42,40 +42,41 @@ d [0-9]
 
  /* Wykrywanie słów kluczowych BEZ uwzględniania wielkości liter */
 (?i:PROGRAM)  return process_token(yytext, "KW_PROGRAM", "", KW_PROGRAM);
-(?i:BEGIN) 	  return process_token(yytext, "KW_BEGIN", "", KW_BEGIN);
-(?i:END) 	    return process_token(yytext, "KW_END", "", KW_END);
-(?i:USES) 	  return process_token(yytext, "KW_USES", "", KW_USES);
-(?i:VAR) 	    return process_token(yytext, "KW_VAR", "", KW_VAR);
-(?i:CONST)  	return process_token(yytext, "KW_CONST", "", KW_CONST);
+(?i:BEGIN)    return process_token(yytext, "KW_BEGIN", "", KW_BEGIN);
+(?i:END)      return process_token(yytext, "KW_END", "", KW_END);
+(?i:USES)     return process_token(yytext, "KW_USES", "", KW_USES);
+(?i:VAR)      return process_token(yytext, "KW_VAR", "", KW_VAR);
+(?i:CONST)    return process_token(yytext, "KW_CONST", "", KW_CONST);
 (?i:IF) 	    return process_token(yytext, "KW_IF", "", KW_IF);
 (?i:THEN) 	  return process_token(yytext, "KW_THEN", "", KW_THEN);
 (?i:ELSE) 	  return process_token(yytext, "KW_ELSE", "", KW_ELSE);
 (?i:CHAR) 	  return process_token(yytext, "KW_CHAR", "", KW_CHAR);
-(?i:INTEGER) 	return process_token(yytext, "KW_INTEGER", "", KW_INTEGER);
+(?i:INTEGER)  return process_token(yytext, "KW_INTEGER", "", KW_INTEGER);
 (?i:REAL)     return process_token(yytext, "KW_REAL", "", KW_REAL);
 (?i:FOR) 	    return process_token(yytext, "KW_FOR", "", KW_FOR);
 (?i:TO) 	    return process_token(yytext, "KW_TO", "", KW_TO);
 (?i:DO) 	    return process_token(yytext, "KW_DO", "", KW_DO);
 (?i:DOWNTO)   return process_token(yytext, "KW_DOWNTO", "", KW_DOWNTO);
 (?i:ARRAY) 	  return process_token(yytext, "KW_ARRAY", "", KW_ARRAY);
-(?i:RECORD) 	return process_token(yytext, "KW_RECORD", "", KW_RECORD);
+(?i:RECORD)   return process_token(yytext, "KW_RECORD", "", KW_RECORD);
 (?i:OF) 	    return process_token(yytext, "KW_OF", "", KW_OF);
 
  /* Usuwanie białych znaków */
 [[:space:]]  ;
 
- /* Wykrywanie stałych tekstowych bez użycia mechanizmu warunków początkowych *
- (\"[^"]*\")|(\'[^']*\') return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); */
+ /* Wykrywanie stałych tekstowych bez użycia mechanizmu warunków początkowych
+(\"[^\"]*\")|(\'[^\']*\') return process_token(yytext, "STRING_CONST", yytext, STRING_CONST); */
+ /* Te backslashe nie są potrzebne, ale Daciuk o tym nie wie i jest uparty nawet jak mu pokażesz [^"] czy [^'] działa na luzie */
 
  /* Wykrywanie symboli końcowych jednoznakowych */
-[[:punct:]]  return process_token(yytext, yytext, "", CHARACTER_CONST);
+[[:punct:]]  return process_token(yytext, yytext, "", *yytext);
 
  /* Wykrywanie identyfikatorów */
-[[:alpha:]_]+[:alnum:]*  return process_token(yytext, "IDENT", yytext, IDENT);
+[[:alpha:]_][[:alnum:]_]*  return process_token(yytext, "IDENT", yytext, IDENT);
 
  /* Wykrywanie liczb */
 ({d}+\.{d}+)([eE](\+|-)?{d}{1,2})?  return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
-{d}+\./[^.]([eE](\+|-)?{d}{1,2})?   return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST);
+{d}+\./[^.]([eE](\+|-)?{d}{1,2})?   return process_token(yytext, "FLOAT_CONST", "", FLOAT_CONST); /* Wg daciuka to jest bullshit. Myli się, sprawdzone. Na oddawanie jednak trzeba wywalić tą linijkę*/
 {d}+                                return process_token(yytext, "INTEGER_CONST", "", INTEGER_CONST);
 
  /* Wykrywanie operatorów wieloznakowych */
@@ -84,7 +85,7 @@ d [0-9]
 ".."  return process_token(yytext, "RANGE", "", RANGE);
 
  /* Wykrywanie dyrektywy dołączania plików */
-\{\$I\ [A-Za-z_]+.inc\}  printf("Przetwarzanie dyrektywy INCLUDE\n");
+\{\$I\ [A-Za-z_]+[[:alnum:]_]*.inc\}  printf("Przetwarzanie dyrektywy INCLUDE\n");
 
 
 %%
@@ -166,10 +167,8 @@ int yywrap( void )
 	/* wypisujemy informację o błędzie.*/
 	/* ..................... */
 
-  if (YYSTATE != INITIAL) {
-    if (comm_beg > 0) {
+  if ((YYSTATE == ST_COMMENT_1) || (YYSTATE == ST_COMMENT_2)) {
       printf("Brak zamknięcia komentarza otwartego w linii %d\n", comm_beg);
-    }
   }
 
 	return( 1 ); /* koniecznie, by analiza nie rozpoczęła się od nowa */
